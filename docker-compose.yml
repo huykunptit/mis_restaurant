@@ -1,0 +1,124 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  db:
+    image: mysql:8.0
+    container_name: restaurant_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-bear_1997_ttcs}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-root}
+      MYSQL_USER: app
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      # Removed automatic SQL import to avoid schema conflicts with migrations
+    networks:
+      - restaurant_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_PASSWORD:-root}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # PHP-FPM Service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: restaurant_app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - restaurant_network
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    environment:
+      - DB_HOST=db
+      - DB_DATABASE=${DB_DATABASE:-ecommerce}
+      - DB_USERNAME=root
+      - DB_PASSWORD=${DB_PASSWORD:-root}
+      - REDIS_HOST=redis
+
+  # Nginx Service
+  nginx:
+    image: nginx:alpine
+    container_name: restaurant_nginx
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8000}:80"
+    volumes:
+      - ./:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - restaurant_network
+    depends_on:
+      - app
+
+  # Redis Service
+  redis:
+    image: redis:alpine
+    container_name: restaurant_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - restaurant_network
+
+  # Composer Service (for running composer commands)
+  composer:
+    image: composer:latest
+    container_name: restaurant_composer
+    volumes:
+      - ./:/app
+    working_dir: /app
+    networks:
+      - restaurant_network
+
+  # phpMyAdmin for DB management
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: restaurant_phpmyadmin
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+    ports:
+      - "8080:80"
+    networks:
+      - restaurant_network
+
+  # Artisan Service (for running artisan commands)
+  artisan:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: restaurant_artisan
+    volumes:
+      - ./:/var/www/html
+    working_dir: /var/www/html
+    entrypoint: ['php', 'artisan']
+    networks:
+      - restaurant_network
+    depends_on:
+      - db
+
+networks:
+  restaurant_network:
+    driver: bridge
+
+volumes:
+  db_data:
+    driver: local
+

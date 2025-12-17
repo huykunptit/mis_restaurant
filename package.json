@@ -7,12 +7,20 @@
         "watch-poll": "mix watch -- --watch-options-poll=1000",
         "hot": "mix watch --hot",
         "prod": "npm run production",
-        "production": "mix --production"
+        "production": "mix --production",
+        "build:css": "npx tailwindcss -i resources/css/app.css -o public/css/app.css"
     },
     "devDependencies": {
-        "axios": "^0.25",
+        "axios": "^1.7.9",
         "laravel-mix": "^6.0.6",
         "lodash": "^4.17.19",
-        "postcss": "^8.1.14"
+        "postcss": "^8.3.9"
+    },
+    "dependencies": {
+        "autoprefixer": "^10.3.7",
+        "icheck-material": "^1.0.1",
+        "ta": "0.0.0",
+        "tailwindcss": "^2.2.17",
+        "turbolinks": "^5.2.0"
     }
 }

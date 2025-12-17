@@ -2,6 +2,11 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\isAdmin;
+use App\Http\Middleware\isGuest;
+use App\Http\Middleware\isStaff;
+use App\Http\Middleware\isCustomer;
+use App\Http\Middleware\isStaffOrAdmin;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -11,7 +16,7 @@ class Kernel extends HttpKernel
      *
      * These middleware are run during every request to your application.
      *
-     * @var array<int, class-string|string>
+     * @var array
      */
     protected $middleware = [
         // \App\Http\Middleware\TrustHosts::class,
@@ -26,7 +31,7 @@ class Kernel extends HttpKernel
     /**
      * The application's route middleware groups.
      *
-     * @var array<string, array<int, class-string|string>>
+     * @var array
      */
     protected $middlewareGroups = [
         'web' => [
@@ -44,6 +49,28 @@ class Kernel extends HttpKernel
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
+
+        'admin' => [
+            \App\Http\Middleware\isAdmin::class,
+        ],
+
+        'staff' => [
+            \App\Http\Middleware\isStaff::class,
+        ],
+
+        'staffOrAdmin' => [
+            \App\Http\Middleware\isStaffOrAdmin::class,
+        ],
+
+        'customer' => [
+            \App\Http\Middleware\isCustomer::class,
+        ],
+
+        'guest' => [
+            \App\Http\Middleware\isGuest::class,
+        ],
+        
+
     ];
 
     /**
@@ -51,7 +78,7 @@ class Kernel extends HttpKernel
      *
      * These middleware may be assigned to groups or used individually.
      *
-     * @var array<string, class-string|string>
+     * @var array
      */
     protected $routeMiddleware = [
         'auth' => \App\Http\Middleware\Authenticate::class,
