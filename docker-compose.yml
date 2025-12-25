@@ -4,10 +4,10 @@ services:
   # MySQL Database
   db:
     image: mysql:8.0
-    container_name: restaurant_db
+    container_name: restaurant
     restart: unless-stopped
     environment:
-      MYSQL_DATABASE: ${DB_DATABASE:-bear_1997_ttcs}
+      MYSQL_DATABASE: ${DB_DATABASE:-restaurant}
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
       MYSQL_PASSWORD: ${DB_PASSWORD:-root}
       MYSQL_USER: app

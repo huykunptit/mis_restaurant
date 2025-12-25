@@ -11,26 +11,64 @@ use Illuminate\Support\Facades\Cache;
 
 class MenuController extends Controller
 {
-    public function index()
-    {   
-        // Cache menu items for 1 hour
-        $foods = cache()->remember('menu_foods', 3600, function() {
-            return Menu::with(['menuOption', 'category'])
-                ->where('category_id', '1')
-                ->orderBy('name')
-                ->get();
+    public function index(Request $request)
+    {
+        $search = $request->get('q');
+        $sort = $request->get('sort', 'new');
+        $perPage = intval($request->get('per_page', 12));
+
+        // Load categories and menus (limited per category). We'll apply simple server-side filtering.
+        $categories = Category::with(['menu' => function($q) use ($search, $sort, $perPage) {
+            $q->with('menuOption');
+
+            if ($search) {
+                $q->where(function($sub) use ($search) {
+                    $sub->where('name', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%");
+                });
+            }
+
+            // If sorting by price we'll sort in-memory after loading because price is in related table
+            if (!in_array($sort, ['price_asc', 'price_desc'])) {
+                $q->orderBy('name');
+            }
+
+            $q->take($perPage);
+        }])->get();
+
+        // Filter out categories that have no menus after filtering
+        $categories = $categories->filter(function($category) {
+            return $category->menu->count() > 0;
         });
 
-        $drinks = cache()->remember('menu_drinks', 3600, function() {
-            return Menu::with(['menuOption', 'category'])
-                ->where('category_id', '2')
-                ->orderBy('name')
-                ->get();
+        // If price sort requested, sort menus collection by first option cost
+        if (in_array($sort, ['price_asc', 'price_desc'])) {
+            $categories->transform(function($cat) use ($sort) {
+                $cat->menu = $cat->menu->sortBy(function($m) {
+                    return optional($m->menuOption->first())->cost ?? 0;
+                }, SORT_REGULAR, $sort === 'price_desc');
+                return $cat;
+            });
+        }
+
+        // Load total count for each category (for display) - count all menus matching search if any
+        $categories->transform(function($category) use ($search) {
+            $totalQuery = $category->menu();
+            if ($search) {
+                $totalQuery->where(function($sub) use ($search) {
+                    $sub->where('name', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%");
+                });
+            }
+            $category->total_menu_count = $totalQuery->count();
+            return $category;
         });
 
         return view('menu.index', [
-            'foods' => $foods,
-            'drinks' => $drinks,
+            'categories' => $categories,
+            'search' => $search,
+            'sort' => $sort,
+            'perPage' => $perPage,
         ]);
     }
 

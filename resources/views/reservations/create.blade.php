@@ -43,7 +43,7 @@
             </div>
 
             <div class="mt-6 flex space-x-4">
-                <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-500">Xác nhận</button>
+                <button type="submit" class="bg-primary text-white px-4 py-2 rounded hover:bg-primary-light dark:hover:bg-primary/100">Xác nhận</button>
                 <a href="{{ route('reservations.index') }}" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-500">Hủy</a>
             </div>
         </form>

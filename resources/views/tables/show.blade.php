@@ -29,7 +29,7 @@
                     Search
                 </button>
             </form>
-            <a href="{{ route('tables.create') }}" class="bg-green-600 hover:bg-green-500 text-white px-3 py-2 rounded-md font-bold">
+            <a href="{{ route('tables.create') }}" class="bg-primary hover:bg-primary-light dark:hover:bg-primary/100 text-white px-3 py-2 rounded-md font-bold">
                 Add New Table
             </a>
         </div>

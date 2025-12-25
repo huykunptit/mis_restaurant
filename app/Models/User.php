@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Models\Role;
 use App\Models\Transaction;
+use App\Models\Shift;
+use App\Models\Attendance;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -25,9 +27,10 @@ class User extends Authenticatable
         'email',
         'password',
         'role_id',
+        'shift_id',
     ];
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     /**
      * The attributes that should be hidden for serialization.
@@ -56,5 +59,15 @@ class User extends Authenticatable
     public function order()
     {
         return $this->hasMany(Transaction::class);
+    }
+
+    public function shift()
+    {
+        return $this->belongsTo(Shift::class);
+    }
+
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
     }
 }

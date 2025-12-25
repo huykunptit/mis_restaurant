@@ -4,23 +4,29 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use App\Models\TemporaryOrder;
+use App\Models\User;
+use App\Models\Menu;
+use App\Models\MenuOption;
+use Faker\Factory as Faker;
 
 class TemporaryOrdersTableSeeder extends Seeder
 {
     public function run()
     {
-        $userId = DB::table('users')->value('id');
-        $menuId = DB::table('menus')->value('id');
-        $menuOptionId = DB::table('menu_options')->value('id');
+        $faker = Faker::create();
+        $userIds = User::pluck('id')->toArray();
+        $menuIds = Menu::pluck('id')->toArray();
+        $menuOptionIds = MenuOption::pluck('id')->toArray();
 
-        DB::table('temporary_orders')->insert([
-            'user_id' => $userId,
-            'menu_id' => $menuId,
-            'menu_option_id' => $menuOptionId,
-            'quantity' => 2,
-            'remarks' => 'Giao nhanh',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        for ($i=0;$i<40;$i++){
+            TemporaryOrder::factory()->create([
+                'user_id' => $faker->randomElement($userIds),
+                'menu_id' => $faker->randomElement($menuIds),
+                'menu_option_id' => $faker->optional()->randomElement($menuOptionIds),
+                'quantity' => $faker->numberBetween(1,4),
+                'remarks' => $faker->sentence(),
+            ]);
+        }
     }
 }

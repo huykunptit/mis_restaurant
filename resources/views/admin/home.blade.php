@@ -6,13 +6,15 @@
     Bảng điều khiển Admin
 @endsection
 
+@section('header-title', 'Bảng điều khiển')
+
 @section('content')
-<div class="p-6 lg:p-10 bg-gray-50 min-h-screen">
+<div class="p-4 lg:p-6 bg-background-light dark:bg-background-dark min-h-screen">
     
     {{-- Header --}}
-    <div class="mb-8">
-        <h1 class="text-4xl font-bold text-gray-800 mb-2">Bảng điều khiển</h1>
-        <p class="text-gray-600">Chào mừng trở lại, {{ auth()->user()->first_name }}!</p>
+    <div class="mb-6">
+        <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-1">Bảng điều khiển</h1>
+        <p class="text-gray-600 dark:text-gray-400 text-sm lg:text-base">Chào mừng trở lại, {{ auth()->user()->first_name }}!</p>
     </div>
 
     {{-- Statistics Cards --}}
@@ -59,7 +61,7 @@
                     <p class="text-xs text-gray-500 mt-2">VNĐ</p>
                 </div>
                 <div class="bg-green-100 p-4 rounded-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </div>
@@ -106,7 +108,7 @@
                 </div>
                 <div class="flex justify-between items-center">
                     <span class="text-gray-600">Nhân viên</span>
-                    <span class="font-bold text-green-600">{{ $totalStaff }}</span>
+                    <span class="font-bold text-primary">{{ $totalStaff }}</span>
                 </div>
             </div>
         </div>
@@ -126,7 +128,7 @@
                 </div>
                 <div class="flex justify-between items-center">
                     <span class="text-gray-600">Đang hoạt động</span>
-                    <span class="font-bold text-green-600">{{ $activeMenuItems }}</span>
+                    <span class="font-bold text-primary">{{ $activeMenuItems }}</span>
                 </div>
                 <div class="flex justify-between items-center">
                     <span class="text-gray-600">Đã vô hiệu</span>
@@ -150,7 +152,7 @@
                 </div>
                 <div class="flex justify-between items-center">
                     <span class="text-gray-600">Đã hoàn thành</span>
-                    <span class="font-bold text-green-600">{{ $completedOrders }}</span>
+                    <span class="font-bold text-primary">{{ $completedOrders }}</span>
                 </div>
                 <div class="flex justify-between items-center">
                     <span class="text-gray-600">Tổng đơn</span>
@@ -175,17 +177,23 @@
                         </svg>
                         <span>Xem đơn hàng</span>
                     </a>
-                    <a href="{{ route('menu.index') }}" class="block w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2">
+                    <a href="{{ route('menu.index') }}" class="block w-full bg-primary hover:hover:bg-primary/90 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                         </svg>
                         <span>Thêm món mới</span>
                     </a>
-                    <a href="{{ route('user.index') }}" class="block w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2">
+                    <a href="{{ route('admin.staffs.index') }}" class="block w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                         </svg>
-                        <span>Quản lý người dùng</span>
+                        <span>Quản lý nhân viên</span>
+                    </a>
+                    <a href="{{ route('admin.customers.index') }}" class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        <span>Quản lý khách hàng</span>
                     </a>
                     <a href="{{ route('tables.index') }}" class="block w-full bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -229,7 +237,7 @@
                                     </td>
                                     <td class="px-4 py-3 whitespace-nowrap">
                                         @if($order->completion_status == 'yes')
-                                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Hoàn thành</span>
+                                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-primary">Hoàn thành</span>
                                         @else
                                             <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Chờ xử lý</span>
                                         @endif

@@ -4,25 +4,32 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use App\Models\Reservation;
+use App\Models\User;
+use App\Models\Table;
+use App\Models\Menu;
+use App\Models\MenuOption;
+use Faker\Factory as Faker;
 
 class ReservationsTableSeeder extends Seeder
 {
     public function run()
     {
-        $userId = DB::table('users')->value('id');
-        $tableId = DB::table('tables')->value('id');
-        $menuId = DB::table('menus')->value('id');
-        $menuOptionId = DB::table('menu_options')->value('id');
+        $faker = Faker::create();
+        $userIds = User::pluck('id')->toArray();
+        $tableIds = Table::pluck('id')->toArray();
+        $menuIds = Menu::pluck('id')->toArray();
+        $menuOptionIds = MenuOption::pluck('id')->toArray();
 
-        DB::table('reservations')->insert([
-            'user_id' => $userId,
-            'table_id' => $tableId,
-            'menu_id' => $menuId,
-            'menu_option_id' => $menuOptionId,
-            'reservation_time' => now()->addDays(1),
-            'status' => 'confirmed',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        for ($i=0;$i<25;$i++){
+            Reservation::factory()->create([
+                'user_id' => $faker->randomElement($userIds),
+                'table_id' => $faker->randomElement($tableIds),
+                'menu_id' => $faker->optional()->randomElement($menuIds),
+                'menu_option_id' => $faker->optional()->randomElement($menuOptionIds),
+                'reservation_time' => $faker->dateTimeBetween('+1 days','+30 days'),
+                'status' => $faker->randomElement(['pending','confirmed','canceled']),
+            ]);
+        }
     }
 }

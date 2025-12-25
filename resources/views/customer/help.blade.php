@@ -38,13 +38,13 @@
         <div class="my-10 flex flex-col gap-y-3 w-full xl:w-1/2">
 
             <div class="shadow-lg overflow-hidden">
-                <div class="select-none accordion rounded-md flex flex-row items-center justify-between bg-green-800 text-white cursor-pointer px-10 py-3 w-full font-bold">
+                <div class="select-none accordion rounded-md flex flex-row items-center justify-between bg-primary text-white cursor-pointer px-10 py-3 w-full font-bold">
                     <p>How to make an order?</p>
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transform transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                 </div>
-                <div class="panel rounded-b-md bg-gray-200 text-green-800 px-10 py-6 w-full hidden overflow-hidden">
+                <div class="panel rounded-b-md bg-gray-200 text-primary px-10 py-6 w-full hidden overflow-hidden">
                     
                     <p>You can make an order from:</p>
                     <ol class="list-disc list-inside">
@@ -67,13 +67,13 @@
             </div>
 
             <div class="shadow-lg overflow-hidden">
-                <div class="select-none accordion rounded-md flex flex-row items-center justify-between bg-green-800 text-white cursor-pointer px-10 py-3 w-full font-bold">
+                <div class="select-none accordion rounded-md flex flex-row items-center justify-between bg-primary text-white cursor-pointer px-10 py-3 w-full font-bold">
                     <p>How to check my order status?</p>
                     <svg id="arrow2" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transform transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                 </div>
-                <div class="panel rounded-b-md bg-gray-200 text-green-800 px-10 py-6 w-full hidden overflow-hidden">
+                <div class="panel rounded-b-md bg-gray-200 text-primary px-10 py-6 w-full hidden overflow-hidden">
                     
                     <p>You can access this from:</p>
                     <ol class="list-disc list-inside">
@@ -95,13 +95,13 @@
             </div>
 
             <div class="shadow-lg overflow-hidden">
-                <div class="select-none accordion rounded-md flex flex-row items-center justify-between bg-green-800 text-white cursor-pointer px-10 py-3 w-full font-bold">
+                <div class="select-none accordion rounded-md flex flex-row items-center justify-between bg-primary text-white cursor-pointer px-10 py-3 w-full font-bold">
                     <p>Where to find drinks section?</p>
                     <svg id="arrow3" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transform transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                 </div>
-                <div class="panel rounded-b-md bg-gray-200 text-green-800 px-10 py-6 w-full hidden overflow-hidden">
+                <div class="panel rounded-b-md bg-gray-200 text-primary px-10 py-6 w-full hidden overflow-hidden">
                     
                     <p class="font-bold">Steps:</p>
                     <ol class="list-decimal list-inside">
@@ -123,12 +123,12 @@
 
                 acc[i].addEventListener("click", function() {
 
-                    if (this.classList.contains('bg-green-800')) {
-                        this.classList.remove('bg-green-800');
-                        this.classList.add('bg-green-700');
+                    if (this.classList.contains('bg-primary')) {
+                        this.classList.remove('bg-primary');
+                        this.classList.add('hover:bg-primary/90');
                     } else {
-                        this.classList.remove('bg-green-700');
-                        this.classList.add('bg-green-800');
+                        this.classList.remove('hover:bg-primary/90');
+                        this.classList.add('bg-primary');
                     }
 
                     var panel = this.nextElementSibling;

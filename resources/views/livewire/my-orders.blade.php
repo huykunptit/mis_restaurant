@@ -22,14 +22,14 @@
     {{-- Filter Buttons --}}
     <div class="flex gap-y-4 flex-col xl:flex-row items-center gap-x-5 my-5 select-none text-sm">
 
-        <div wire:click="new" class="flex flex-row items-center justify-center gap-x-3 border-3 border-green-800 text-center font-bold py-1.5 px-4 rounded-full w-full xl:w-40 cursor-pointer @isset($part) @if($part == "new") bg-green-800 text-white @elseif($part == "submitted") text-green-800 hover:bg-green-800 hover:text-white @else text-green-800 hover:bg-green-800 hover:text-white @endif @endisset">
+        <div wire:click="new" class="flex flex-row items-center justify-center gap-x-3 border-3 border-green-800 text-center font-bold py-1.5 px-4 rounded-full w-full xl:w-40 cursor-pointer @isset($part) @if($part == "new") bg-primary text-white @elseif($part == "submitted") text-primary hover:bg-primary hover:text-white @else text-primary hover:bg-primary hover:text-white @endif @endisset">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
             <p>Gọi thêm đồ</p>
         </div>
 
-        <div wire:click="submitted" class="flex flex-row items-center justify-center gap-x-3 border-3 border-green-800 text-center font-bold py-1.5 px-4 rounded-full w-full xl:w-52 cursor-pointer @isset($part) @if($part == "submitted") bg-green-800 text-white @elseif($part == "new") text-green-800 hover:bg-green-800 hover:text-white @else text-green-800 hover:bg-green-800 hover:text-white @endif @endisset">
+        <div wire:click="submitted" class="flex flex-row items-center justify-center gap-x-3 border-3 border-green-800 text-center font-bold py-1.5 px-4 rounded-full w-full xl:w-52 cursor-pointer @isset($part) @if($part == "submitted") bg-primary text-white @elseif($part == "new") text-primary hover:bg-primary hover:text-white @else text-primary hover:bg-primary hover:text-white @endif @endisset">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
             </svg>
@@ -81,12 +81,12 @@
                                 
                                 {{-- Button --}}
                                 <div class="flex flex-row items-center">
-                                    <button type="button" wire:click="decrement({{ $myOrder->id }})" wire:loading.attr="disabled" wire:target="decrement({{ $myOrder->id }})" class="px-3 py-0.5 bg-green-800 hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-xl rounded-l-full transition-all duration-500">
+                                    <button type="button" wire:click="decrement({{ $myOrder->id }})" wire:loading.attr="disabled" wire:target="decrement({{ $myOrder->id }})" class="px-3 py-0.5 bg-primary hover:bg-primary disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-xl rounded-l-full transition-all duration-500">
                                         <span wire:loading.remove wire:target="decrement({{ $myOrder->id }})">-</span>
                                         <span wire:loading wire:target="decrement({{ $myOrder->id }})" class="inline-block animate-spin">⟳</span>
                                     </button>
                                     <p class="px-4 py-1 text-md font-bold w-10 text-center border-2 border-green-800">{{ $myOrder->quantity }}</p>
-                                    <button type="button" wire:click="increment({{ $myOrder->id }})" wire:loading.attr="disabled" wire:target="increment({{ $myOrder->id }})" class="px-3 py-0.5 bg-green-800 hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-xl rounded-r-full transition-all duration-500">
+                                    <button type="button" wire:click="increment({{ $myOrder->id }})" wire:loading.attr="disabled" wire:target="increment({{ $myOrder->id }})" class="px-3 py-0.5 bg-primary hover:bg-primary disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-xl rounded-r-full transition-all duration-500">
                                         <span wire:loading.remove wire:target="increment({{ $myOrder->id }})">+</span>
                                         <span wire:loading wire:target="increment({{ $myOrder->id }})" class="inline-block animate-spin">⟳</span>
                                     </button>
@@ -115,12 +115,12 @@
                                 {{-- Button --}}
                                 <div class="flex flex-row items-center gap-x-2 w-full">
                                     <div class="flex flex-row items-center">
-                                        <button type="button" wire:click="decrement({{ $myOrder->id }})" wire:loading.attr="disabled" wire:target="decrement({{ $myOrder->id }})" class="px-3 py-0.5 bg-green-800 hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-xl rounded-l-full transition-all duration-500">
+                                        <button type="button" wire:click="decrement({{ $myOrder->id }})" wire:loading.attr="disabled" wire:target="decrement({{ $myOrder->id }})" class="px-3 py-0.5 bg-primary hover:bg-primary disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-xl rounded-l-full transition-all duration-500">
                                             <span wire:loading.remove wire:target="decrement({{ $myOrder->id }})">-</span>
                                             <span wire:loading wire:target="decrement({{ $myOrder->id }})" class="inline-block animate-spin">⟳</span>
                                         </button>
                                         <p class="px-4 py-1 text-md font-bold w-10 text-center border-2 border-green-800">{{ $myOrder->quantity }}</p>
-                                        <button type="button" wire:click="increment({{ $myOrder->id }})" wire:loading.attr="disabled" wire:target="increment({{ $myOrder->id }})" class="px-3 py-0.5 bg-green-800 hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-xl rounded-r-full transition-all duration-500">
+                                        <button type="button" wire:click="increment({{ $myOrder->id }})" wire:loading.attr="disabled" wire:target="increment({{ $myOrder->id }})" class="px-3 py-0.5 bg-primary hover:bg-primary disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-xl rounded-r-full transition-all duration-500">
                                             <span wire:loading.remove wire:target="increment({{ $myOrder->id }})">+</span>
                                             <span wire:loading wire:target="increment({{ $myOrder->id }})" class="inline-block animate-spin">⟳</span>
                                         </button>
@@ -163,7 +163,7 @@
             </div>
 
             {{-- Line --}}
-            <div class="bg-green-800 w-full h-1 mt-5"></div>
+            <div class="bg-primary w-full h-1 mt-5"></div>
             
             {{-- Tổng --}}
             <div class="flex flex-row items-center justify-between text-lg font-extrabold my-5">
@@ -186,7 +186,7 @@
 
             </div>
 
-            <button type="submit" wire:loading.attr="disabled" wire:target="submitOrder" class="bg-green-800 hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed text-white py-4 w-full rounded-lg transform hover:scale-105 transition-all duration-500 flex items-center justify-center">
+            <button type="submit" wire:loading.attr="disabled" wire:target="submitOrder" class="bg-primary hover:bg-primary disabled:opacity-50 disabled:cursor-not-allowed text-white py-4 w-full rounded-lg transform hover:scale-105 transition-all duration-500 flex items-center justify-center">
                 <span wire:loading.remove wire:target="submitOrder">Submit</span>
                 <span wire:loading wire:target="submitOrder" class="flex items-center">
                     <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -250,7 +250,7 @@
 
                                 @else
 
-                                    <div class="bg-green-800 text-white text-xs w-20 text-center py-1 rounded-full">
+                                    <div class="bg-primary text-white text-xs w-20 text-center py-1 rounded-full">
                                         <p>Đã giao món</p>
                                     </div>
 
@@ -270,7 +270,7 @@
                 </div>
 
                 {{-- Line --}}
-                <div class="bg-green-800 w-full h-1 mt-5"></div>
+                <div class="bg-primary w-full h-1 mt-5"></div>
                 
                 {{-- Tổng --}}
                 <div class="flex flex-row items-center justify-between text-lg font-extrabold my-5">
@@ -294,7 +294,7 @@
                 </div>
 
                 {{-- Line --}}
-                <div class="bg-green-800 w-full h-1 mt-5"></div>
+                <div class="bg-primary w-full h-1 mt-5"></div>
 
             @else
             

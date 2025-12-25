@@ -10,11 +10,45 @@ class TableController extends Controller
     /**
      * Hiển thị danh sách bàn.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // $tables = Table::all();
-        $tables = Table::paginate(10);
-        return view('tables.index', compact('tables'));
+        $query = Table::query();
+
+        // Filter by zone
+        if ($request->filled('zone')) {
+            $query->where('zone', $request->input('zone'));
+        }
+
+        if ($request->filled('table_number')) {
+            $query->where('table_number', 'like', '%' . $request->input('table_number') . '%');
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
+        }
+
+        // Exclude merged tables by default
+        if (!$request->has('include_merged')) {
+            $query->where('is_merged', 0);
+        }
+
+        $sort = $request->input('sort');
+        if ($sort === 'seats_asc') {
+            $query->orderBy('seats', 'asc');
+        } elseif ($sort === 'seats_desc') {
+            $query->orderBy('seats', 'desc');
+        } elseif ($sort === 'table_number') {
+            $query->orderBy('table_number');
+        } else {
+            $query->orderBy('zone')->orderBy('table_number');
+        }
+
+        $tables = $query->paginate(20)->appends($request->query());
+
+        // Get zones for tabs
+        $zones = Table::select('zone')->distinct()->whereNotNull('zone')->pluck('zone');
+
+        return view('tables.index', compact('tables', 'zones'));
     }
     public function list(Request $request)
     {
@@ -106,12 +140,23 @@ class TableController extends Controller
         $selectedTables = explode(',', $request->input('selected_tables', ''));
     
         if (count($selectedTables) < 2) {
-            return redirect()->route('tables.list')->with('error', 'You need to select at least two tables to merge.');
+            return redirect()->route('tables.index')->with('error', 'Bạn cần chọn ít nhất 2 bàn để gộp.');
         }
+    
+        // Check if any table is already merged
+        $alreadyMerged = Table::whereIn('id', $selectedTables)->where('is_merged', 1)->exists();
+        if ($alreadyMerged) {
+            return redirect()->route('tables.index')->with('error', 'Một trong các bàn đã được gộp rồi.');
+        }
+
+        // Get table numbers for display
+        $tableNumbers = Table::whereIn('id', $selectedTables)->pluck('table_number')->toArray();
+        $zone = Table::whereIn('id', $selectedTables)->value('zone');
     
         // Prepare merged table data
         $mergedTable = [
-            'table_number' => 'Merged ' . implode(', ', $selectedTables),
+            'table_number' => 'Gộp ' . implode(', ', $tableNumbers),
+            'zone' => $zone,
             'seats' => Table::whereIn('id', $selectedTables)->sum('seats'),
             'status' => 'available',
             'is_merged' => 0, // New merged table is active
@@ -124,7 +169,7 @@ class TableController extends Controller
         // Create the new merged table
         Table::create($mergedTable);
     
-        return redirect()->route('tables.list')->with('success', 'Tables merged successfully.');
+        return redirect()->route('tables.index')->with('success', 'Đã gộp bàn thành công.');
     }
     
 

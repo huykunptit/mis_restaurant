@@ -30,6 +30,12 @@ class LoginController extends Controller
             
             $user = auth()->user();
             
+            // Tự động check-in cho nhân viên
+            if ($user->hasRole('staff')) {
+                $attendanceController = new \App\Http\Controllers\AttendanceController();
+                $attendanceController->checkIn($user->id);
+            }
+            
             if ($user->hasRole('admin')) {
                 return redirect()->route('home.admin');
             } elseif ($user->hasRole('staff')) {

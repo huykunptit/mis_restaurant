@@ -11,6 +11,7 @@ class Table extends Model
 
     protected $fillable = [
         'table_number',
+        'zone',
         'seats',
         'status',
         'is_merged',
@@ -24,5 +25,11 @@ class Table extends Model
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
+    }
+    
+    // Alias for backward compatibility
+    public function getOrderAttribute()
+    {
+        return $this->transactions;
     }
 }

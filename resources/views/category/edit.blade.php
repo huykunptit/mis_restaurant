@@ -7,39 +7,35 @@
 @endsection
 
 @section('content')
-<div class="p-6 lg:p-10 bg-gray-50 min-h-screen">
+<div class="container-fluid py-4 bg-light min-vh-100">
 
     {{-- Header --}}
-    <div class="mb-8">
-        <h1 class="text-4xl font-bold text-gray-800 mb-2">Chỉnh sửa danh mục: {{ $category->name }}</h1>
+    <div class="mb-4">
+        <h1 class="h2 fw-bold text-dark mb-2">Chỉnh sửa danh mục: {{ $category->name }}</h1>
         
-        {{-- Bread Crumb --}}
-        <div class="flex items-center text-sm text-gray-600 mt-4">
-            <a href="{{ route('home.' . auth()->user()->role->name) }}" class="font-medium hover:text-green-600 transition-colors">Trang chủ</a>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
-            <a href="{{ route('category.index') }}" class="font-medium hover:text-green-600 transition-colors">Danh mục</a>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
-            <span>Chỉnh sửa</span>
-        </div>
+        {{-- Breadcrumb --}}
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{{ route('home.' . auth()->user()->role->name) }}" class="text-decoration-none">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('category.index') }}" class="text-decoration-none">Danh mục</a></li>
+                <li class="breadcrumb-item active">Chỉnh sửa</li>
+            </ol>
+        </nav>
     </div>
 
     {{-- Form Card --}}
-    <div class="bg-white rounded-xl shadow-lg p-8 max-w-2xl">
-        <p class="text-gray-600 mb-6">Thay đổi thông tin trong form bên dưới để cập nhật danh mục</p>
-        
-        <form action="{{ route('category.update', $category->id) }}" method="POST">
-            @csrf
-            @method('PUT')
+    <div class="card shadow-sm mx-auto" style="max-width: 500px;">
+        <div class="card-body">
+            <p class="text-muted mb-4">Thay đổi thông tin trong form bên dưới để cập nhật danh mục</p>
             
-            <div class="space-y-6">
+            <form action="{{ route('category.update', $category->id) }}" method="POST">
+                @csrf
+                @method('PUT')
+                
                 {{-- Category Name --}}
-                <div>
-                    <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">
-                        Tên danh mục <span class="text-red-500">*</span>
+                <div class="mb-3">
+                    <label for="name" class="form-label">
+                        Tên danh mục <span class="text-danger">*</span>
                     </label>
                     <input 
                         type="text" 
@@ -47,35 +43,32 @@
                         name="name" 
                         value="{{ old('name', $category->name) }}" 
                         maxlength="200"
-                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-colors @error('name') border-red-500 @enderror" 
+                        class="form-control @error('name') is-invalid @enderror" 
                         placeholder="Ví dụ: Món chính, Đồ uống, Tráng miệng..."
                         required
                     >
                     @error('name')
-                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
                 </div>
 
                 {{-- Buttons --}}
-                <div class="flex items-center space-x-4 pt-4">
+                <div class="d-flex gap-2 pt-2">
                     <button 
                         type="submit" 
-                        class="bg-green-600 hover:bg-green-700 text-white font-semibold px-8 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center space-x-2"
+                        class="btn btn-primary"
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        <span>Xác nhận cập nhật</span>
+                        <i class="bi bi-check-circle"></i> Cập nhật
                     </button>
                     <a 
                         href="{{ route('category.index') }}" 
-                        class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold px-8 py-3 rounded-lg transition-colors duration-200"
+                        class="btn btn-secondary"
                     >
                         Hủy
                     </a>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </div>
 @endsection

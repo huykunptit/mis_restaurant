@@ -7,7 +7,7 @@
 @endsection
 
 @section('content')
-<div class="p-6 lg:p-10 bg-gray-50 min-h-screen">
+<div class="container-fluid px-3 px-sm-4 px-lg-5 py-4 py-sm-5 bg-gray-50 min-h-screen">
 
     {{-- Header --}}
     <div class="mb-8">
@@ -15,11 +15,11 @@
         
         {{-- Bread Crumb --}}
         <div class="flex items-center text-sm text-gray-600 mt-4">
-            <a href="{{ route('home.' . auth()->user()->role->name) }}" class="font-medium hover:text-green-600 transition-colors">Trang chủ</a>
+            <a href="{{ route('home.' . auth()->user()->role->name) }}" class="font-medium hover:text-primary transition-colors">Trang chủ</a>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
-            <a href="{{ route('menu.index') }}" class="font-medium hover:text-green-600 transition-colors">Menu</a>
+            <a href="{{ route('menu.index') }}" class="font-medium hover:text-primary transition-colors">Menu</a>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
@@ -28,7 +28,7 @@
     </div>
 
     {{-- Form Card --}}
-    <div class="bg-white rounded-xl shadow-lg p-8 max-w-4xl">
+    <div class="bg-white rounded-xl shadow-lg p-8 max-w-4xl mx-auto">
         <p class="text-gray-600 mb-6">Vui lòng điền thông tin vào form bên dưới để thêm món mới</p>
         
         <form action="{{ route('menu.store') }}" method="POST" enctype="multipart/form-data">
@@ -37,24 +37,22 @@
             <div class="space-y-6">
                 {{-- Category --}}
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-3">
+                    <label for="category" class="block text-sm font-semibold text-gray-700 mb-2">
                         Danh mục <span class="text-red-500">*</span>
                     </label>
-                    <div class="flex flex-wrap gap-4">
+                    <select 
+                        id="category" 
+                        name="category" 
+                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors @error('category') border-red-500 @enderror" 
+                        required
+                    >
+                        <option value="">-- Chọn danh mục --</option>
                         @foreach ($categories as $category)
-                            <label class="flex items-center space-x-2 cursor-pointer">
-                                <input 
-                                    type="radio" 
-                                    name="category" 
-                                    value="{{ $category->id }}" 
-                                    class="w-5 h-5 text-green-600 border-gray-300 focus:ring-green-500"
-                                    {{ old('category') == $category->id ? 'checked' : '' }}
-                                    required
-                                />
-                                <span class="text-gray-700 capitalize">{{ $category->name }}</span>
-                            </label>
+                            <option value="{{ $category->id }}" {{ old('category') == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
                         @endforeach
-                    </div>
+                    </select>
                     @error('category')
                         <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -97,7 +95,7 @@
                             >
                             <label 
                                 for="image" 
-                                class="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-green-500 hover:bg-green-50 transition-colors"
+                                class="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-primary hover:bg-primary-light dark:hover:bg-primary/10 transition-colors"
                             >
                                 <div class="text-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -144,7 +142,7 @@
                         <button 
                             type="button" 
                             id="add-option" 
-                            class="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors flex items-center space-x-1"
+                            class="bg-primary hover:hover:bg-primary/90 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors flex items-center space-x-1"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -153,42 +151,54 @@
                         </button>
                     </div>
                     
-                    <div id="options-container" class="space-y-4">
-                        {{-- First Option --}}
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg option-row">
-                            <div>
-                                <label class="block text-xs font-medium text-gray-600 mb-1">Tên tùy chọn</label>
-                                <input 
-                                    type="text" 
-                                    name="optionName[0]" 
-                                    value="{{ old('optionName.0') }}"
-                                    class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-green-500 transition-colors" 
-                                    placeholder="Ví dụ: Size L, Size M..."
-                                    required
-                                >
-                            </div>
-                            <div>
-                                <label class="block text-xs font-medium text-gray-600 mb-1">Giá (VNĐ)</label>
-                                <input 
-                                    type="number" 
-                                    name="optionPrice[0]" 
-                                    value="{{ old('optionPrice.0') }}"
-                                    min="1" 
-                                    step="1000"
-                                    class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-green-500 transition-colors" 
-                                    placeholder="0"
-                                    required
-                                >
-                            </div>
-                            <div class="flex items-end">
-                                <button 
-                                    type="button" 
-                                    class="remove-option hidden bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors text-sm"
-                                >
-                                    Xóa
-                                </button>
-                            </div>
-                        </div>
+                    {{-- Table for Options --}}
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-sm">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider border-b">STT</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider border-b">Tên tùy chọn</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider border-b">Giá (VNĐ)</th>
+                                    <th class="px-4 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider border-b">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="options-container" class="bg-white divide-y divide-gray-200">
+                                {{-- First Option --}}
+                                <tr class="option-row hover:bg-gray-50">
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">1</td>
+                                    <td class="px-4 py-3">
+                                        <input 
+                                            type="text" 
+                                            name="optionName[0]" 
+                                            value="{{ old('optionName.0') }}"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors" 
+                                            placeholder="Ví dụ: Size L, Size M..."
+                                            required
+                                        >
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <input 
+                                            type="number" 
+                                            name="optionPrice[0]" 
+                                            value="{{ old('optionPrice.0') }}"
+                                            min="1" 
+                                            step="1"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors" 
+                                            placeholder="0"
+                                            required
+                                        >
+                                    </td>
+                                    <td class="px-4 py-3 text-center">
+                                        <button 
+                                            type="button" 
+                                            class="remove-option hidden bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg transition-colors text-sm"
+                                        >
+                                            Xóa
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
@@ -196,11 +206,9 @@
                 <div class="flex items-center space-x-4 pt-6 border-t border-gray-200">
                     <button 
                         type="submit" 
-                        class="bg-green-600 hover:bg-green-700 text-white font-semibold px-8 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center space-x-2"
+                        class="bg-primary hover:bg-primary/90 text-white font-semibold px-8 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center gap-2"
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
+                        <span class="material-symbols-outlined text-lg">check</span>
                         <span>Xác nhận tạo</span>
                     </button>
                     <a 
@@ -215,54 +223,73 @@
     </div>
 </div>
 
+{{-- Select2 CSS --}}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 <script>
+    // Initialize Select2
+    $(document).ready(function() {
+        $('#category').select2({
+            theme: 'bootstrap-5',
+            placeholder: '-- Chọn danh mục --',
+            allowClear: false,
+            width: '100%'
+        });
+    });
+
     let optionIndex = 1;
     
     document.getElementById('add-option').addEventListener('click', function() {
         const container = document.getElementById('options-container');
-        const newOption = document.createElement('div');
-        newOption.className = 'grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg option-row';
-        newOption.innerHTML = `
-            <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1">Tên tùy chọn</label>
+        const rowCount = container.querySelectorAll('tr').length + 1;
+        const newRow = document.createElement('tr');
+        newRow.className = 'option-row hover:bg-gray-50';
+        newRow.innerHTML = `
+            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">${rowCount}</td>
+            <td class="px-4 py-3">
                 <input 
                     type="text" 
                     name="optionName[${optionIndex}]" 
-                    class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-green-500 transition-colors" 
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors" 
                     placeholder="Ví dụ: Size L, Size M..."
                     required
                 >
-            </div>
-            <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1">Giá (VNĐ)</label>
+            </td>
+            <td class="px-4 py-3">
                 <input 
                     type="number" 
                     name="optionPrice[${optionIndex}]" 
                     min="1" 
-                    step="1000"
-                    class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-green-500 transition-colors" 
+                    step="1"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors" 
                     placeholder="0"
                     required
                 >
-            </div>
-            <div class="flex items-end">
+            </td>
+            <td class="px-4 py-3 text-center">
                 <button 
                     type="button" 
-                    class="remove-option bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors text-sm"
+                    class="remove-option bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg transition-colors text-sm"
                 >
                     Xóa
                 </button>
-            </div>
+            </td>
         `;
-        container.appendChild(newOption);
+        container.appendChild(newRow);
         optionIndex++;
         updateRemoveButtons();
+        updateRowNumbers();
     });
 
     document.addEventListener('click', function(e) {
         if (e.target.classList.contains('remove-option')) {
             e.target.closest('.option-row').remove();
             updateRemoveButtons();
+            updateRowNumbers();
         }
     });
 
@@ -274,6 +301,16 @@
                 removeBtn.classList.remove('hidden');
             } else {
                 removeBtn.classList.add('hidden');
+            }
+        });
+    }
+
+    function updateRowNumbers() {
+        const rows = document.querySelectorAll('.option-row');
+        rows.forEach((row, index) => {
+            const firstCell = row.querySelector('td:first-child');
+            if (firstCell) {
+                firstCell.textContent = index + 1;
             }
         });
     }

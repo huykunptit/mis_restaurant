@@ -15,7 +15,9 @@ class Transaction extends Model
 
     protected $fillable = [
         'user_id',
+        'staff_id',
         'table_id',
+        'order_group_id',
         'menu_id',
         'menu_option_id',
         'quantity',
@@ -42,6 +44,11 @@ class Transaction extends Model
     public function table()
     {
         return $this->belongsTo(Table::class);
+    }
+
+    public function staff()
+    {
+        return $this->belongsTo(User::class, 'staff_id');
     }
 }
  

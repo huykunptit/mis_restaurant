@@ -9,26 +9,45 @@ use Illuminate\Http\Request;
 class ReservationController extends Controller
 {
 
-    public function index()
-{
-    $user = auth()->user();
+    public function index(Request $request)
+    {
+        $user = auth()->user();
+        $query = Reservation::with(['table', 'user']);
 
-    if ($user->role_id == 3) {
-        $reservations = Reservation::with('table')
-            ->where('user_id', $user->id)
-            ->latest()
-            ->paginate(10);
-    } else {
-        $reservations = Reservation::with('table')
-            ->latest()
-            ->paginate(10);
+        if ($user->role_id == 3) {
+            $query->where('user_id', $user->id);
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
+        }
+
+        if ($request->filled('table_number')) {
+            $query->whereHas('table', function ($q) use ($request) {
+                $q->where('table_number', 'like', '%' . $request->input('table_number') . '%');
+            });
+        }
+
+        if ($request->filled('customer')) {
+            $query->whereHas('user', function ($q) use ($request) {
+                $q->where('first_name', 'like', '%' . $request->input('customer') . '%')
+                    ->orWhere('last_name', 'like', '%' . $request->input('customer') . '%');
+            });
+        }
+
+        $sort = $request->input('sort');
+        if ($sort === 'time_asc') {
+            $query->orderBy('reservation_time', 'asc');
+        } elseif ($sort === 'time_desc') {
+            $query->orderBy('reservation_time', 'desc');
+        } else {
+            $query->latest();
+        }
+
+        $reservations = $query->paginate(10)->appends($request->query());
+
+        return view('reservations.index', compact('reservations'));
     }
-
-    // Tables that are available
-    $tables = Table::where('status', 'available')->get();
-
-    return view('reservations.index', compact('tables', 'reservations'));
-}
     
 
     public function create()

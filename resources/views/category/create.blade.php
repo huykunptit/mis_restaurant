@@ -7,7 +7,7 @@
 @endsection
 
 @section('content')
-<div class="p-6 lg:p-10 bg-gray-50 min-h-screen">
+<div class="container-fluid px-3 px-sm-4 px-lg-5 py-4 py-sm-5 bg-gray-50 min-h-screen">
 
     {{-- Header --}}
     <div class="mb-8">
@@ -15,11 +15,11 @@
         
         {{-- Bread Crumb --}}
         <div class="flex items-center text-sm text-gray-600 mt-4">
-            <a href="{{ route('home.' . auth()->user()->role->name) }}" class="font-medium hover:text-green-600 transition-colors">Trang chủ</a>
+            <a href="{{ route('home.' . auth()->user()->role->name) }}" class="font-medium hover:text-primary transition-colors">Trang chủ</a>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
-            <a href="{{ route('category.index') }}" class="font-medium hover:text-green-600 transition-colors">Danh mục</a>
+            <a href="{{ route('category.index') }}" class="font-medium hover:text-primary transition-colors">Danh mục</a>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
@@ -28,7 +28,7 @@
     </div>
 
     {{-- Form Card --}}
-    <div class="bg-white rounded-xl shadow-lg p-8 max-w-2xl">
+    <div class="bg-white rounded-xl shadow-lg p-8 max-w-2xl mx-auto">
         <p class="text-gray-600 mb-6">Vui lòng điền thông tin vào form bên dưới</p>
         
         <form action="{{ route('category.store') }}" method="POST">
@@ -59,7 +59,7 @@
                 <div class="flex items-center space-x-4 pt-4">
                     <button 
                         type="submit" 
-                        class="bg-green-600 hover:bg-green-700 text-white font-semibold px-8 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center space-x-2"
+                        class="bg-primary hover:hover:bg-primary/90 text-white font-semibold px-8 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center space-x-2"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />

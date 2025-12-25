@@ -19,14 +19,14 @@
     {{-- Filter Buttons --}}
     <div class="space-x-3 flex flex-row text-center overflow-auto whitespace-nowrap filterButtons mb-10">
 
-        <div wire:click="food" id="foodsButton" class="flex flex-row items-center justify-center space-x-4 border-2 border-green-800 font-semibold p-2 w-32 rounded-full cursor-pointer transition-all duration-500  @isset($section) @if($section == "food") bg-green-800 text-white @elseif($section == "drink") bg-white text-green-800 hover:bg-green-800 hover:text-white @else bg-white text-green-800 hover:bg-green-800 hover:text-white @endif @endisset">
+        <div wire:click="food" id="foodsButton" class="flex flex-row items-center justify-center space-x-4 border-2 border-green-800 font-semibold p-2 w-32 rounded-full cursor-pointer transition-all duration-500  @isset($section) @if($section == "food") bg-primary text-white @elseif($section == "drink") bg-white text-primary hover:bg-primary hover:text-white @else bg-white text-primary hover:bg-primary hover:text-white @endif @endisset">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.701 2.701 0 00-1.5-.454M9 6v2m3-2v2m3-2v2M9 3h.01M12 3h.01M15 3h.01M21 21v-7a2 2 0 00-2-2H5a2 2 0 00-2 2v7h18zm-3-9v-2a2 2 0 00-2-2H8a2 2 0 00-2 2v2h12z" />
             </svg>
             <p>Đồ ăn</p>
         </div>
 
-        <div wire:click="drink" id="drinksButton" class="flex flex-row items-center justify-center space-x-4 border-2 border-green-800 font-semibold p-2 w-32 rounded-full cursor-pointer transition-all duration-500 @isset($section) @if($section == "food") bg-white text-green-800 hover:bg-green-800 hover:text-white @elseif($section == "drink") bg-green-800 text-white @else bg-white text-green-800 hover:bg-green-800 hover:text-white @endif @endisset">
+        <div wire:click="drink" id="drinksButton" class="flex flex-row items-center justify-center space-x-4 border-2 border-green-800 font-semibold p-2 w-32 rounded-full cursor-pointer transition-all duration-500 @isset($section) @if($section == "food") bg-white text-primary hover:bg-primary hover:text-white @elseif($section == "drink") bg-primary text-white @else bg-white text-primary hover:bg-primary hover:text-white @endif @endisset">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
             </svg>
@@ -97,20 +97,20 @@
                         </div>
 
                         {{-- Action --}}
-                        <form wire:submit.prevent='addOrder({{ $food->id }})' class="mx-2 mt-2 flex flex-row items-center justify-between gap-x-3">
+                        <form action="{{ route('cart.add') }}" method="POST" class="mx-2 mt-2 flex flex-row items-center justify-between gap-x-3">
                             @csrf
+                            <input type="hidden" name="menu_id" value="{{ $food->id }}">
                             
-                            <select wire:model="optionId" class="w-full p-1 border-3 border-green-800 focus:outline-none focus:border-green-500 rounded-full capitalize" required>
-                                
+                            <select name="menu_option_id" class="w-full p-1 border-3 border-primary focus:outline-none focus:border-primary rounded-full capitalize" required>
                                 <option value="" class="capitalize">-- Lựa chọn --</option>
-
                                 @foreach ($food->menuOption as $option)
                                     <option value="{{ $option->id }}" class="capitalize">{{ $option->name }}</option>
                                 @endforeach
-            
                             </select>
+                            
+                            <input type="hidden" name="quantity" value="1">
 
-                            <button class="text-white bg-green-800 py-2 px-4 rounded-full" type="submit">
+                            <button class="text-white bg-primary py-2 px-4 rounded-full" type="submit" title="Thêm vào giỏ hàng">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
                                 </svg>
@@ -190,20 +190,20 @@
                         </div>
 
                         {{-- Action --}}
-                        <form wire:submit.prevent='addOrder({{ $drink->id }})' class="mx-2 mt-2 flex flex-row items-center justify-between gap-x-3">
+                        <form action="{{ route('cart.add') }}" method="POST" class="mx-2 mt-2 flex flex-row items-center justify-between gap-x-3">
                             @csrf
+                            <input type="hidden" name="menu_id" value="{{ $drink->id }}">
                             
-                            <select wire:model="optionId" class="w-full p-1 border-3 border-green-800 focus:outline-none focus:border-green-500 rounded-full capitalize" required>
-                                
+                            <select name="menu_option_id" class="w-full p-1 border-3 border-primary focus:outline-none focus:border-primary rounded-full capitalize" required>
                                 <option value="" class="capitalize">-- Lựa chọn --</option>
-
                                 @foreach ($drink->menuOption as $option)
                                     <option value="{{ $option->id }}" class="capitalize">{{ $option->name }}</option>
                                 @endforeach
-            
                             </select>
+                            
+                            <input type="hidden" name="quantity" value="1">
 
-                            <button class="text-white bg-green-800 py-2 px-4 rounded-full" type="submit">
+                            <button class="text-white bg-primary py-2 px-4 rounded-full" type="submit" title="Thêm vào giỏ hàng">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
                                 </svg>

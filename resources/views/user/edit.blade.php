@@ -7,60 +7,56 @@
 @endsection
 
 @section('content')
-<div class="p-6 lg:p-10 bg-gray-50 min-h-screen">
+<div class="container-fluid py-4 bg-light min-vh-100">
 
     {{-- Header --}}
-    <div class="mb-8">
-        <h1 class="text-4xl font-bold text-gray-800 mb-2">Chỉnh sửa người dùng: {{ $user->first_name .' '. $user->last_name }}</h1>
+    <div class="mb-4">
+        <h1 class="h2 fw-bold text-dark mb-2">Chỉnh sửa người dùng: {{ $user->first_name .' '. $user->last_name }}</h1>
         
-        {{-- Bread Crumb --}}
-        <div class="flex items-center text-sm text-gray-600 mt-4">
-            <a href="{{ route('home.' . auth()->user()->role->name) }}" class="font-medium hover:text-green-600 transition-colors">Trang chủ</a>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
-            <a href="{{ route('user.index') }}" class="font-medium hover:text-green-600 transition-colors">Người dùng</a>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
-            <span>Chỉnh sửa</span>
-        </div>
+        {{-- Breadcrumb --}}
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{{ route('home.' . auth()->user()->role->name) }}" class="text-decoration-none">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('user.index') }}" class="text-decoration-none">Người dùng</a></li>
+                <li class="breadcrumb-item active">Chỉnh sửa</li>
+            </ol>
+        </nav>
     </div>
 
     {{-- Form Card --}}
-    <div class="bg-white rounded-xl shadow-lg p-8 max-w-2xl">
-        <p class="text-gray-600 mb-6">Thay đổi thông tin trong form bên dưới để cập nhật tài khoản người dùng</p>
-        
-        <form action="{{ route('user.update', $user->id) }}" method="POST">
-            @csrf
-            @method('PUT')
+    <div class="card shadow-sm mx-auto" style="max-width: 600px;">
+        <div class="card-body">
+            <p class="text-muted mb-4">Thay đổi thông tin trong form bên dưới để cập nhật tài khoản người dùng</p>
             
-            <div class="space-y-6">
+            <form action="{{ route('user.update', $user->id) }}" method="POST">
+                @csrf
+                @method('PUT')
+                
                 {{-- Role --}}
-                <div>
-                    <label for="role" class="block text-sm font-semibold text-gray-700 mb-2">
-                        Vai trò <span class="text-red-500">*</span>
+                <div class="mb-3">
+                    <label for="role" class="form-label">
+                        Vai trò <span class="text-danger">*</span>
                     </label>
                     <select 
                         id="role" 
                         name="role" 
-                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-colors capitalize @error('role') border-red-500 @enderror" 
+                        class="form-select @error('role') is-invalid @enderror" 
                         required
                     >
                         @foreach ($roles as $role)
-                            <option value="{{ $role->id }}" {{ ($user->role->id) == ($role->id) ? 'selected' : '' }} class="capitalize">{{ $role->name }}</option>
+                            <option value="{{ $role->id }}" {{ ($user->role->id) == ($role->id) ? 'selected' : '' }}>{{ $role->name }}</option>
                         @endforeach
                     </select>
                     @error('role')
-                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="row g-3 mb-3">
                     {{-- First Name --}}
-                    <div>
-                        <label for="firstName" class="block text-sm font-semibold text-gray-700 mb-2">
-                            Họ <span class="text-red-500">*</span>
+                    <div class="col-12 col-md-6">
+                        <label for="firstName" class="form-label">
+                            Họ <span class="text-danger">*</span>
                         </label>
                         <input 
                             type="text" 
@@ -68,19 +64,19 @@
                             name="firstName" 
                             value="{{ old('firstName', $user->first_name) }}" 
                             maxlength="200"
-                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-colors @error('firstName') border-red-500 @enderror" 
+                            class="form-control @error('firstName') is-invalid @enderror" 
                             placeholder="Nhập họ..."
                             required
                         >
                         @error('firstName')
-                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
 
                     {{-- Last Name --}}
-                    <div>
-                        <label for="lastName" class="block text-sm font-semibold text-gray-700 mb-2">
-                            Tên <span class="text-red-500">*</span>
+                    <div class="col-12 col-md-6">
+                        <label for="lastName" class="form-label">
+                            Tên <span class="text-danger">*</span>
                         </label>
                         <input 
                             type="text" 
@@ -88,21 +84,21 @@
                             name="lastName" 
                             value="{{ old('lastName', $user->last_name) }}" 
                             maxlength="200"
-                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-colors @error('lastName') border-red-500 @enderror" 
+                            class="form-control @error('lastName') is-invalid @enderror" 
                             placeholder="Nhập tên..."
                             required
                         >
                         @error('lastName')
-                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="row g-3 mb-3">
                     {{-- Email --}}
-                    <div>
-                        <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
-                            Địa chỉ email <span class="text-red-500">*</span>
+                    <div class="col-12 col-md-6">
+                        <label for="email" class="form-label">
+                            Địa chỉ email <span class="text-danger">*</span>
                         </label>
                         <input 
                             type="email" 
@@ -110,19 +106,19 @@
                             name="email" 
                             value="{{ old('email', $user->email) }}" 
                             maxlength="200"
-                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-colors @error('email') border-red-500 @enderror" 
+                            class="form-control @error('email') is-invalid @enderror" 
                             placeholder="example@email.com"
                             required
                         >
                         @error('email')
-                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
 
                     {{-- Password --}}
-                    <div>
-                        <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">
-                            Mật khẩu mới <span class="text-gray-400 text-xs">(để trống nếu không đổi)</span>
+                    <div class="col-12 col-md-6">
+                        <label for="password" class="form-label">
+                            Mật khẩu mới <small class="text-muted">(để trống nếu không đổi)</small>
                         </label>
                         <input 
                             type="password" 
@@ -130,35 +126,32 @@
                             name="password" 
                             maxlength="200"
                             minlength="6"
-                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-colors @error('password') border-red-500 @enderror" 
+                            class="form-control @error('password') is-invalid @enderror" 
                             placeholder="Tối thiểu 6 ký tự"
                         >
                         @error('password')
-                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                 </div>
 
                 {{-- Buttons --}}
-                <div class="flex items-center space-x-4 pt-6 border-t border-gray-200">
+                <div class="d-flex gap-2 pt-3 border-top">
                     <button 
                         type="submit" 
-                        class="bg-green-600 hover:bg-green-700 text-white font-semibold px-8 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center space-x-2"
+                        class="btn btn-primary"
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        <span>Xác nhận cập nhật</span>
+                        <i class="bi bi-check-circle"></i> Xác nhận cập nhật
                     </button>
                     <a 
                         href="{{ route('user.index') }}" 
-                        class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold px-8 py-3 rounded-lg transition-colors duration-200"
+                        class="btn btn-secondary"
                     >
                         Hủy
                     </a>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </div>
 @endsection

@@ -9,7 +9,11 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::withCount('menu')->orderBy('name')->get();
+        // Count all menus including disabled ones
+        $categories = Category::withCount(['menu' => function($query) {
+            // Count all menus regardless of disable status
+        }])->orderBy('name')->get();
+        
         return view('category.index', [
             'categories' => $categories,
         ]);

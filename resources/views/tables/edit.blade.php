@@ -76,7 +76,7 @@
                     @enderror
                 </div>
 
-                <button type="submit" class="border-3 hover:border-green-700 border-green-800 hover:bg-green-700 bg-green-800 text-white py-4 rounded-lg font-bold transition-all duration-500 transform hover:scale-105">
+                <button type="submit" class="border-3 hover:border-green-700 border-green-800 hover:hover:bg-primary/90 bg-primary text-white py-4 rounded-lg font-bold transition-all duration-500 transform hover:scale-105">
                     <p>Xác nhận cập nhật</p>
                 </button>
 

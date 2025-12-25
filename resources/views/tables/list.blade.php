@@ -13,7 +13,7 @@
 
         <div class="flex justify-between items-center mt-4">
             <div class="flex space-x-4">
-                <button type="button" onclick="mergeTables()" class="bg-green-600 hover:bg-green-500 text-white px-3 py-2 rounded-md font-bold">
+                <button type="button" onclick="mergeTables()" class="bg-primary hover:bg-primary-light dark:hover:bg-primary/100 text-white px-3 py-2 rounded-md font-bold">
                     Merge Tables
                 </button>
                 <a href="{{ route('tables.create') }}" class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-2 rounded-md font-bold">

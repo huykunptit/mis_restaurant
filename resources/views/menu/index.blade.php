@@ -14,352 +14,155 @@
         $i = 0;
     @endphp
 
-    <div class="p-6 lg:p-10 bg-gray-50 min-h-screen">
-
-        {{-- Header --}}
-        <div class="mb-8">
-            <div class="flex items-center justify-between mb-4">
+    <div class="w-100 bg-light" style="background-color: #f8f9fa;">
+        
+        {{-- Header Section --}}
+        <div class="px-3 px-sm-4 px-lg-5 py-5">
+            <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-4 mb-4">
                 <div>
-                    <h1 class="text-4xl font-bold text-gray-800 mb-2">Quản lý Menu</h1>
-                    <p class="text-gray-600">Quản lý các món ăn và đồ uống trong menu</p>
+                    <h1 class="h2 fw-bold text-dark mb-2">Quản lý Menu</h1>
+                    <p class="text-muted">Quản lý các món ăn và đồ uống trong menu của nhà hàng</p>
                 </div>
-                <a href="{{ route('menu.create') }}" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                    </svg>
+                <a href="{{ route('menu.create') }}" class="btn btn-warning btn-lg d-inline-flex align-items-center justify-content-center gap-2 shadow-sm" style="width: fit-content;">
+                    <i class="bi bi-plus-lg"></i>
                     <span>Thêm món mới</span>
                 </a>
             </div>
 
-            {{-- Bread Crumb --}}
-            <div class="flex items-center text-sm text-gray-600">
-                <a href="{{ route('home.' . auth()->user()->role->name ) }}" class="font-medium hover:text-green-600 transition-colors">Trang chủ</a>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                </svg>
-                <span>Menu</span>
+            {{-- Breadcrumb --}}
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ route('home.' . auth()->user()->role->name ) }}" class="text-decoration-none">Trang chủ</a></li>
+                    <li class="breadcrumb-item active">Menu</li>
+                </ol>
+            </nav>
+        </div>
+        
+        {{-- Search & Sort Controls --}}
+        <div class="px-3 px-sm-4 px-lg-5 pb-5">
+            <div class="d-flex flex-column gap-2">
+                <div class="d-flex flex-column flex-sm-row gap-2">
+                    <div class="position-relative flex-grow-1">
+                        <i class="bi bi-search position-absolute start-3 top-50 translate-middle-y text-muted"></i>
+                        <input id="searchInput" type="text" placeholder="Tìm kiếm món, mô tả..." class="form-control ps-4" />
+                    </div>
+                    <select id="sortSelect" class="form-select" style="max-width: fit-content;">
+                        <option value="new">Mới nhất</option>
+                        <option value="popular">Phổ biến</option>
+                        <option value="price_asc">Giá: Thấp → Cao</option>
+                        <option value="price_desc">Giá: Cao → Thấp</option>
+                    </select>
+                </div>
             </div>
         </div>
         
-        {{-- Filter Buttons --}}
-        <div class="mb-8 flex flex-wrap gap-3">
-            <button id="foodsButton" class="flex items-center justify-center space-x-2 bg-green-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.701 2.701 0 00-1.5-.454M9 6v2m3-2v2m3-2v2M9 3h.01M12 3h.01M15 3h.01M21 21v-7a2 2 0 00-2-2H5a2 2 0 00-2 2v7h18zm-3-9v-2a2 2 0 00-2-2H8a2 2 0 00-2 2v2h12z" />
-                </svg>
-                <span>Đồ ăn</span>
-            </button>
+        <div class="w-100 px-3 px-sm-4 px-lg-5">
 
-            <button id="drinksButton" class="flex items-center justify-center space-x-2 bg-white text-green-600 border-2 border-green-600 font-semibold px-6 py-3 rounded-lg shadow-md hover:shadow-lg hover:bg-green-50 transition-all duration-300 cursor-pointer">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                </svg>
-                <span>Đồ uống</span>
-            </button>
-        </div>
-        
-        <div class="w-full my-10">
-            
-            {{-- Foods Content --}}
-            <div id="foodsContent">
-
-                @isset($foods)
-                
-                    {{-- All Content Grids --}}
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                            
-                        @foreach ($foods as $food)
-                            
-                            {{-- One Menu Item Card --}}
-                            <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group">
-
-                                {{-- Menu Item Image --}}
-                                <div class="relative w-full aspect-square overflow-hidden bg-gray-200">
-                                    @if ($food->thumbnail == null)
-                                        <img class="w-full h-full object-cover" src="{{ asset('img/noimg.png') }}" alt="{{ $food->name }}">
+            {{-- Group by categories: landing page style per category --}}
+            @if(isset($categories) && $categories->count())
+                @foreach($categories as $category)
+                    <section id="category-{{ $category->id }}" class="mb-5">
+                        <div class="d-flex align-items-center justify-content-between mb-4">
+                            <div>
+                                <h2 class="h3 fw-bold text-dark">{{ $category->name }}</h2>
+                                <p class="small text-muted mt-1">
+                                    @if(isset($category->total_menu_count))
+                                        {{ $category->total_menu_count }} món ăn
+                                        @if($category->menu->count() < $category->total_menu_count)
+                                            (hiển thị {{ $category->menu->count() }})
+                                        @endif
                                     @else
-                                        <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="{{ asset('images/'.$food->thumbnail) }}" alt="{{ $food->name }}">
+                                        {{ $category->menu->count() }} món ăn
                                     @endif
-                                    
-                                    {{-- Status Badge --}}
-                                    <div class="absolute top-3 right-3">
-                                        @if ($food->disable == "yes")
-                                            <span class="px-3 py-1 bg-red-500 text-white text-xs font-semibold rounded-full shadow-lg">Đã vô hiệu</span>
-                                        @else
-                                            <span class="px-3 py-1 bg-green-500 text-white text-xs font-semibold rounded-full shadow-lg">Đang bán</span>
-                                        @endif
-                                    </div>
-                                    
-                                    @if ($food->pre_order)
-                                        <div class="absolute top-3 left-3">
-                                            <span class="px-3 py-1 bg-blue-500 text-white text-xs font-semibold rounded-full shadow-lg">Đặt trước</span>
+                                </p>
+                            </div>
+                            @if(isset($category->total_menu_count) && $category->total_menu_count > $category->menu->count())
+                            <div>
+                                @php $morePer = ($perPage ?? 12) * 2; @endphp
+                                <a href="{{ route('menu.index', array_merge(request()->query(), ['per_page' => $morePer])) }}#category-{{ $category->id }}" class="text-warning fw-semibold text-decoration-none small">Xem tất cả →</a>
+                            </div>
+                            @endif
+                        </div>
+
+                        <div class="row g-3">
+                            @foreach($category->menu as $item)
+                                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                                    <div class="card h-100 shadow-sm border-light" style="transition: box-shadow 0.2s;">
+                                        <div class="position-relative overflow-hidden" style="height: 12rem;">
+                                            @if($item->thumbnail)
+                                                <img class="card-img-top w-100 h-100 object-fit-cover" src="{{ asset('images/'.$item->thumbnail) }}" alt="{{ $item->name }}" style="object-fit: cover;">
+                                            @else
+                                                <div class="w-100 h-100 d-flex align-items-center justify-content-center bg-light text-muted">
+                                                    <i class="bi bi-image" style="font-size: 3rem; opacity: 0.3;"></i>
+                                                </div>
+                                            @endif
+
+                                            <div class="position-absolute top-0 end-0 p-2">
+                                                @if($item->disable == 'yes')
+                                                    <span class="badge bg-danger">Vô hiệu</span>
+                                                @else
+                                                    <span class="badge bg-success">Đang bán</span>
+                                                @endif
+                                            </div>
                                         </div>
-                                    @endif
-                                </div>
 
-                                {{-- Menu Item Info --}}
-                                <div class="p-4">
-                                    <h3 class="text-lg font-bold text-gray-800 mb-2 line-clamp-1">{{ $food->name }}</h3>
-                                    <p class="text-2xl font-bold text-green-600 mb-4">{{ number_format($food->menuOption->first()->cost ?? 0, 0) }} VNĐ</p>
-                    
-                                    {{-- Action Buttons --}}
-                                    <div class="flex gap-2">
-
-                                        {{-- Edit Button --}}
-                                        <a href="{{ route('menu.edit', $food->id) }}" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-1">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                            </svg>
-                                            <span>Sửa</span>
-                                        </a>
-
-                                        @if ($food->disable == 'no')
-                                            <form action="{{ route('menu.disable', $food->id) }}" method="POST" class="flex-1">
-                                                @csrf
-                                                @method('put')
-                                                <button type="submit" class="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-1">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-                                                    </svg>
-                                                    <span>Vô hiệu</span>
-                                                </button>
-                                            </form>
-                                        @else
-                                            <form action="{{ route('menu.enable', $food->id) }}" method="POST" class="flex-1">
-                                                @csrf
-                                                @method('put')
-                                                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-1">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                    </svg>
-                                                    <span>Kích hoạt</span>
-                                                </button>
-                                            </form>
-                                        @endif
-
-                                        <button onclick="delete{{ $food->id }}()" class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </div>
-                                    
-                                    {{-- Modal --}}
-                                    <div id="modal{{ $food->id }}" class="hidden fixed z-10 inset-0 w-full h-full overflow-auto pt-20" style="background: rgba(0,0,0,0.5);">
+                                        <div class="card-body d-flex flex-column">
+                                            <h5 class="card-title fw-bold text-dark" style="font-size: 1rem; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">{{ $item->name }}</h5>
                                             
-                                        <div id="modalBox{{ $food->id }}" class="bg-white w-3/4 lg:w-1/3 mx-auto p-10 rounded-lg text-center animate__animated animate__bounceInDown shadow-2xl">
+                                            {{-- Display all menu options with prices --}}
+                                            @if($item->menuOption && $item->menuOption->count() > 0)
+                                                <div class="mb-2">
+                                                    @if($item->menuOption->count() == 1)
+                                                        <p class="h5 fw-bold text-warning mb-0">{{ number_format($item->menuOption->first()->cost ?? 0,0) }}₫</p>
+                                                    @else
+                                                        <div class="small">
+                                                            @foreach($item->menuOption as $option)
+                                                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                                                    <span class="text-muted">{{ $option->name }}:</span>
+                                                                    <span class="fw-semibold text-warning">{{ number_format($option->cost,0) }}₫</span>
+                                                                </div>
+                                                            @endforeach
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            @else
+                                                <p class="text-muted small mb-2">Chưa có giá</p>
+                                            @endif
+                                            
+                                            <p class="card-text text-muted small" style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">{{ $item->description ?? 'Không có mô tả' }}</p>
 
-                                            {{-- Title --}}
-                                            <p class="text-3xl font-bold">Xác nhận Deletion</p>
+                                            <div class="d-flex gap-2 mt-auto">
+                                                <a href="{{ route('menu.edit', $item->id) }}" class="btn btn-sm btn-primary flex-grow-1 d-inline-flex align-items-center justify-content-center gap-1">
+                                                    <i class="bi bi-pencil"></i>
+                                                    <span>Sửa</span>
+                                                </a>
 
-                                            {{-- Text --}}
-                                            <p class="my-10">Are you sure you want to delete this menu item?</p>
-
-                                            {{-- Button --}}
-                                            <div class="flex flex-row items-center justify-center gap-5">
-
-                                                <form action="{{ route('menu.destroy', $food->id) }}" method="POST">
+                                                <form action="{{ route('menu.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Bạn chắc chắn muốn xoá món này?')" class="d-inline">
                                                     @csrf
                                                     @method('DELETE')
-        
-                                                    {{-- Disable --}}
-                                                    <button type="submit" class="bg-green-800 text-white px-10 py-3 rounded-md">Yes</button>
-
+                                                    <button type="submit" class="btn btn-sm btn-danger" title="Xoá">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
                                                 </form>
-
-                                                <div href="" onclick="cancel{{ $food->id }}()" class="bg-red-800 text-white px-10 py-3 rounded-md cursor-pointer">Huỷ</div>
                                             </div>
-                                        </div>  
-
-                                    </div>
-                                    
-                                    {{-- Modal Script (NOTE: Don't Move) --}}
-                                    <script>
-
-                                        // Xoá Button
-                                        function delete{{ $food->id }}(){
-
-                                            const modal{{ $food->id }} =  document.querySelector('#modal{{ $food->id }}');
-                                            const modalBox{{ $food->id }} =  document.querySelector('#modalBox{{ $food->id }}');
-
-                                            if (modal{{ $food->id }}.classList.contains('hidden')){
-                                                
-                                                modal{{ $food->id }}.classList.remove('hidden');
-
-                                            }
-
-                                            if (modalBox{{ $food->id }}.classList.contains('animate__bounceOutUp')){
-                                                
-                                                modalBox{{ $food->id }}.classList.remove('animate__bounceOutUp');
-                                                modalBox{{ $food->id }}.classList.add('animate__bounceInDown');
-
-                                            }
-                                        }
-
-                                        // Cancel Button
-                                        function cancel{{ $food->id }}(){
-
-                                            const modal{{ $food->id }} =  document.querySelector('#modal{{ $food->id }}');
-                                            const modalBox{{ $food->id }} =  document.querySelector('#modalBox{{ $food->id }}');
-
-                                            if (modalBox{{ $food->id }}.classList.contains('animate__bounceInDown')){
-                                                
-                                                modalBox{{ $food->id }}.classList.remove('animate__bounceInDown');
-                                                modalBox{{ $food->id }}.classList.add('animate__bounceOutUp');
-
-                                            }
-                                            
-                                            setTimeout(function () {
-                                                modal{{ $food->id }}.classList.add('hidden');
-                                            }, 800);
-
-                                        }
-
-                                        const modal{{ $food->id }} =  document.querySelector('#modal{{ $food->id }}');
-                                        const modalBox{{ $food->id }} =  document.querySelector('#modalBox{{ $food->id }}');
-                                        
-                                        window.addEventListener("click", function(event) {
-
-                                            if (event.target == modal{{ $food->id }}) {
-
-                                                if (modalBox{{ $food->id }}.classList.contains('animate__bounceInDown')){
-                                                
-                                                    modalBox{{ $food->id }}.classList.remove('animate__bounceInDown');
-                                                    modalBox{{ $food->id }}.classList.add('animate__bounceOutUp');
-
-                                                }
-                                                
-                                                setTimeout(function () {
-                                                    modal{{ $food->id }}.classList.add('hidden');
-                                                }, 800);
-
-                                            }
-                                        });
-
-                                    </script>
-
-                                </div>
-                    
-                            </div>
-
-                        @endforeach
-
-                    </div>
-
-                @else
-
-                    <div class="sm:w-1/2 mx-auto -mt-14">
-                        <img src="{{ asset('img/no_food.svg') }}" class="sm:w-2/3 mx-auto"> 
-                        <p class="font-extrabold text-4xl text-center mt-4">Chưa có món ăn nào</p>
-                        <p class="font-extrabold text-sm text-center mt-2">Nếu bạn là Admin hoặc Nhân viên bếp, vui lòng thêm món ăn mới.</p>
-                    </div>
-
-                @endisset
-
-            </div>
-
-            <div id="drinksContent" class="hidden">
-
-                @isset($drinks)
-                    
-                    {{-- All Content Grids --}}
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-
-                        @foreach ($drinks as $drink)
-
-                            {{-- One Menu Item Card --}}
-                            <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group">
-
-                                {{-- Menu Item Image --}}
-                                <div class="relative w-full aspect-square overflow-hidden bg-gray-200">
-                                    @if ($drink->thumbnail == null)
-                                        <img class="w-full h-full object-cover" src="{{ asset('img/noimg.png') }}" alt="{{ $drink->name }}">
-                                    @else
-                                        <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="{{ asset('images/'.$drink->thumbnail) }}" alt="{{ $drink->name }}">
-                                    @endif
-                                    
-                                    {{-- Status Badge --}}
-                                    <div class="absolute top-3 right-3">
-                                        @if ($drink->disable == "yes")
-                                            <span class="px-3 py-1 bg-red-500 text-white text-xs font-semibold rounded-full shadow-lg">Đã vô hiệu</span>
-                                        @else
-                                            <span class="px-3 py-1 bg-green-500 text-white text-xs font-semibold rounded-full shadow-lg">Đang bán</span>
-                                        @endif
-                                    </div>
-                                    
-                                    @if ($drink->pre_order)
-                                        <div class="absolute top-3 left-3">
-                                            <span class="px-3 py-1 bg-blue-500 text-white text-xs font-semibold rounded-full shadow-lg">Đặt trước</span>
                                         </div>
-                                    @endif
-                                </div>
-
-                                {{-- Menu Item Info --}}
-                                <div class="p-4">
-                                    <h3 class="text-lg font-bold text-gray-800 mb-2 line-clamp-1">{{ $drink->name }}</h3>
-                                    <p class="text-2xl font-bold text-green-600 mb-4">{{ number_format($drink->menuOption->first()->cost ?? 0, 0) }} VNĐ</p>
-                    
-                                    {{-- Action Buttons --}}
-                                    <div class="flex gap-2">
-                                        {{-- Edit Button --}}
-                                        <a href="{{ route('menu.edit', $drink->id) }}" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-1">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                            </svg>
-                                            <span>Sửa</span>
-                                        </a>
-
-                                        @if ($drink->disable == 'no')
-                                            <form action="{{ route('menu.disable', $drink->id) }}" method="POST" class="flex-1">
-                                                @csrf
-                                                @method('put')
-                                                <button type="submit" class="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-1">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-                                                    </svg>
-                                                    <span>Vô hiệu</span>
-                                                </button>
-                                            </form>
-                                        @else
-                                            <form action="{{ route('menu.enable', $drink->id) }}" method="POST" class="flex-1">
-                                                @csrf
-                                                @method('put')
-                                                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-1">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                    </svg>
-                                                    <span>Kích hoạt</span>
-                                                </button>
-                                            </form>
-                                        @endif
-
-                                        <button onclick="delete{{ $drink->id }}()" class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                            </svg>
-                                        </button>
                                     </div>
                                 </div>
-                    
-                            </div>
-                        
-                        @endforeach
+                            @endforeach
+                        </div>
+                    </section>
+                @endforeach
+            @else
+                <div class="text-center py-5">
+                    <i class="bi bi-image" style="font-size: 5rem; opacity: 0.2;"></i>
+                    <p class="fw-bold h5 text-dark mt-3">Chưa có món ăn nào</p>
+                    <p class="text-muted mb-4">Thêm những món ăn đầu tiên cho menu của bạn</p>
+                    <a href="{{ route('menu.create') }}" class="btn btn-warning">
+                        Thêm món mới
+                    </a>
+                </div>
+            @endif
 
-                    </div>
-
-                @else
-
-                    <div class="sm:w-1/2 mx-auto -mt-24">
-                        <img src="{{ asset('img/no_drink.svg') }}" class="sm:w-2/3 mx-auto"> 
-                        <p class="font-extrabold text-4xl text-center mt-4">Chưa có đồ uống nào</p>
-                        <p class="font-extrabold text-sm text-center mt-2">Nếu bạn là Admin hoặc Nhân viên bếp, vui lòng thêm đồ uống mới.</p>
-                    </div>
-
-                @endisset
-
-            </div>
-            
         </div>
 
     </div>
