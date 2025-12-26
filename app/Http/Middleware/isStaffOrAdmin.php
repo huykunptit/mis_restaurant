@@ -25,7 +25,7 @@ class isStaffOrAdmin
 
         else{
 
-            if(auth()->user()->hasRole('admin') || auth()->user()->hasRole('staff') ){
+            if(auth()->user()->hasRole('admin') || auth()->user()->hasRole('employee') ){
                 return $next($request);
             }
 
@@ -33,6 +33,8 @@ class isStaffOrAdmin
                 return redirect()
                     ->route('home.customer');
             }
+
+            return abort(403);
         }
     }
 }

@@ -10,6 +10,7 @@ class Table extends Model
     use HasFactory;
 
     protected $fillable = [
+        'code',
         'table_number',
         'zone',
         'seats',

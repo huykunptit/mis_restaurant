@@ -6,13 +6,12 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use App\Models\Menu;
 use App\Models\MenuOption;
-use Faker\Factory as Faker;
 
 class MenuOptionsTableSeeder extends Seeder
 {
     public function run()
     {
-        $faker = Faker::create();
+        $faker = \Faker\Factory::create();
         $menus = Menu::all();
 
         foreach ($menus as $menu) {

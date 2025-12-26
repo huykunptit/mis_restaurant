@@ -8,13 +8,12 @@ use App\Models\TemporaryOrder;
 use App\Models\User;
 use App\Models\Menu;
 use App\Models\MenuOption;
-use Faker\Factory as Faker;
 
 class TemporaryOrdersTableSeeder extends Seeder
 {
     public function run()
     {
-        $faker = Faker::create();
+        $faker = \Faker\Factory::create();
         $userIds = User::pluck('id')->toArray();
         $menuIds = Menu::pluck('id')->toArray();
         $menuOptionIds = MenuOption::pluck('id')->toArray();

@@ -31,8 +31,7 @@ class isGuest
                     ->route('home.admin');
             }
 
-            elseif(auth()->user()->hasRole('staff')){
-          ;
+                        elseif(auth()->user()->hasRole('employee')){
                 return redirect()
                     ->route('home.staff');
             }
@@ -42,6 +41,8 @@ class isGuest
                 return redirect()
                     ->route('home.customer');
             }
+
+            return abort(403);
         }
 
     }

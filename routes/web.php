@@ -125,7 +125,10 @@ use App\Http\Controllers\AttendanceController;
 
     Route::prefix('staff')->middleware(['staff'])->group(function() {
 
-        Route::get('home', [OrderController::class, 'index'])->name('home.staff');
+        // Điều hướng nhân viên trực tiếp đến màn hình chọn bàn
+        Route::get('home', function () {
+            return redirect()->route('staff.orders.select-table');
+        })->name('home.staff');
 
         // Staff Orders - Đặt món tại bàn
         Route::get('orders/select-table', [StaffOrderController::class, 'selectTable'])->name('staff.orders.select-table');
@@ -137,6 +140,32 @@ use App\Http\Controllers\AttendanceController;
         Route::get('payment/table/{tableId}', [PaymentController::class, 'table'])->name('staff.payment.table');
         Route::post('payment/create-qr', [PaymentController::class, 'createQrCode'])->name('staff.payment.create-qr');
         Route::post('payment/confirm/{paymentId}', [PaymentController::class, 'confirm'])->name('staff.payment.confirm');
+
+    });
+
+
+// |--------------------------------------------------------------------------
+// | Employee (alias to staff home)
+// |--------------------------------------------------------------------------
+
+    Route::prefix('employee')->middleware(['staff'])->group(function() {
+
+        Route::get('home', function () {
+            return redirect()->route('home.staff');
+        })->name('home.employee');
+
+    });
+
+
+// |--------------------------------------------------------------------------
+// | Guest (alias to customer home)
+// |--------------------------------------------------------------------------
+
+    Route::prefix('guest')->middleware(['customer'])->group(function() {
+
+        Route::get('home', function () {
+            return redirect()->route('home.customer');
+        })->name('home.guest');
 
     });
 

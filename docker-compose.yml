@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # MySQL Database
   db:
@@ -44,7 +42,7 @@ services:
         condition: service_started
     environment:
       - DB_HOST=db
-      - DB_DATABASE=${DB_DATABASE:-ecommerce}
+      - DB_DATABASE=${DB_DATABASE:-restaurant}
       - DB_USERNAME=root
       - DB_PASSWORD=${DB_PASSWORD:-root}
       - REDIS_HOST=redis

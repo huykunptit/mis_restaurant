@@ -6,13 +6,12 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use App\Models\Menu;
 use App\Models\Category;
-use Faker\Factory as Faker;
 
 class MenusTableSeeder extends Seeder
 {
     public function run()
     {
-        $faker = Faker::create();
+        $faker = \Faker\Factory::create();
 
         $categories = Category::all();
 

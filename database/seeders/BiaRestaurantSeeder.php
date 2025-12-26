@@ -13,13 +13,12 @@ use App\Models\TemporaryOrder;
 use App\Models\Transaction;
 use App\Models\Reservation;
 use App\Models\Role;
-use Faker\Factory as Faker;
 
 class BiaRestaurantSeeder extends Seeder
 {
     public function run()
     {
-        $faker = Faker::create('vi_VN');
+        $faker = \Faker\Factory::create('vi_VN');
 
         // Clear existing data (optional - comment out if you want to keep existing data)
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
@@ -496,38 +495,47 @@ class BiaRestaurantSeeder extends Seeder
         }
 
         // 3. CREATE USERS (50-100 customers + some staff)
-        $customerRole = Role::where('name', 'customer')->first();
-        $staffRole = Role::where('name', 'staff')->first();
+        $customerRole = Role::where('name', 'customer')->first() ?? Role::create(['name' => 'customer']);
+        $employeeRole = Role::where('name', 'employee')->first();
         
-        if (!$customerRole) {
-            $customerRole = Role::create(['name' => 'customer']);
-        }
-        if (!$staffRole) {
-            $staffRole = Role::create(['name' => 'staff']);
+        if (!$employeeRole) {
+            abort(404, 'Employee role not found. Please run migrations first.');
         }
 
         $users = collect();
         
-        // Create 80 customers
-        for ($i = 0; $i < 80; $i++) {
-            $users->push(User::create([
-                'first_name' => $faker->firstName(),
-                'last_name' => $faker->lastName(),
-                'email' => $faker->unique()->safeEmail(),
-                'password' => bcrypt('password'),
-                'role_id' => $customerRole->id,
-            ]));
+        // Create 30 customers
+        for ($i = 0; $i < 30; $i++) {
+            try {
+                $user = User::create([
+                    'first_name' => $faker->firstName(),
+                    'last_name' => $faker->lastName(),
+                    'email' => $faker->unique()->safeEmail(),
+                    'password' => bcrypt('password'),
+                    'role_id' => $customerRole->id,
+                ]);
+                $users->push($user);
+            } catch (\Exception $e) {
+                // Skip duplicates
+                continue;
+            }
         }
 
-        // Create 10 staff
-        for ($i = 0; $i < 10; $i++) {
-            $users->push(User::create([
-                'first_name' => $faker->firstName(),
-                'last_name' => $faker->lastName(),
-                'email' => $faker->unique()->safeEmail(),
-                'password' => bcrypt('password'),
-                'role_id' => $staffRole->id,
-            ]));
+        // Create 5 staff
+        for ($i = 0; $i < 5; $i++) {
+            try {
+                $user = User::create([
+                    'first_name' => $faker->firstName(),
+                    'last_name' => $faker->lastName(),
+                    'email' => $faker->unique()->safeEmail(),
+                    'password' => bcrypt('password'),
+                    'role_id' => $employeeRole->id,
+                ]);
+                $users->push($user);
+            } catch (\Exception $e) {
+                // Skip duplicates
+                continue;
+            }
         }
 
         // 4. CREATE TABLES (20-30 tables)
@@ -535,83 +543,84 @@ class BiaRestaurantSeeder extends Seeder
         $tables = collect();
         for ($i = 1; $i <= 25; $i++) {
             $tables->push(Table::create([
-                'table_number' => 'T' . str_pad($i, 2, '0', STR_PAD_LEFT),
-                'zone' => $faker->randomElement($zones),
+                'code' => 'T' . str_pad($i, 2, '0', STR_PAD_LEFT),
+                'table_number' => 'BT' . str_pad($i, 2, '0', STR_PAD_LEFT),
                 'seats' => $faker->randomElement([2, 4, 6, 8, 10]),
                 'status' => $faker->randomElement(['available', 'occupied', 'reserved']),
             ]));
         }
 
-        // 5. CREATE TRANSACTIONS (Orders) - 200-300 transactions
+        // 5. CREATE TRANSACTIONS (Orders) - 50 transactions
         $transactions = collect();
         $customers = $users->where('role_id', $customerRole->id);
+        $staffs = $users->where('role_id', $employeeRole->id);
         
-        for ($i = 0; $i < 250; $i++) {
-            $customer = $customers->random();
-            $menu = $allMenus->random();
-            $option = MenuOption::where('menu_id', $menu->id)->inRandomOrder()->first();
+        for ($i = 0; $i < 50; $i++) {
             $table = $tables->random();
+            $menu = $allMenus->random();
+            $menuOption = $menu->menuOption()->first();
+            $user = $customers->count() > 0 ? $customers->random() : null;
             
             $createdAt = $faker->dateTimeBetween('-3 months', 'now');
             
-            $completionStatus = $faker->randomElement(['yes', 'no']);
-            $paymentStatus = $completionStatus === 'yes' ? $faker->randomElement(['yes', 'no']) : 'no';
-            
             $transactions->push(Transaction::create([
-                'user_id' => $customer->id,
                 'table_id' => $table->id,
+                'user_id' => $user->id ?? null,
+                'staff_id' => $staffs->count() > 0 ? $staffs->random()->id : null,
                 'menu_id' => $menu->id,
-                'menu_option_id' => $option->id,
+                'menu_option_id' => $menuOption->id ?? null,
                 'quantity' => $faker->numberBetween(1, 5),
                 'remarks' => $faker->optional(0.3)->sentence() ?? '',
-                'completion_status' => $completionStatus,
-                'payment_status' => $paymentStatus,
+                'completion_status' => $faker->randomElement(['pending', 'preparing', 'completed']),
+                'payment_status' => $faker->randomElement(['unpaid', 'paid', 'partial']),
+                'order_group_id' => 'ORD-' . $faker->numerify('###-####'),
                 'created_at' => $createdAt,
                 'updated_at' => $createdAt,
             ]));
         }
 
-        // 6. CREATE TEMPORARY ORDERS (Cart items) - 50-100
-        for ($i = 0; $i < 80; $i++) {
-            $customer = $customers->random();
+        // 6. CREATE TEMPORARY ORDERS (Cart items) - 20
+        for ($i = 0; $i < 20; $i++) {
+            $user = $customers->count() > 0 ? $customers->random() : null;
             $menu = $allMenus->random();
-            $option = MenuOption::where('menu_id', $menu->id)->inRandomOrder()->first();
+            $menuOption = $menu->menuOption()->first();
             
             TemporaryOrder::create([
-                'user_id' => $customer->id,
+                'user_id' => $user->id ?? null,
                 'menu_id' => $menu->id,
-                'menu_option_id' => $option->id,
+                'menu_option_id' => $menuOption->id ?? null,
                 'quantity' => $faker->numberBetween(1, 3),
-                'remarks' => $faker->optional(0.2)->sentence() ?? '',
+                'remarks' => $faker->optional(0.3)->sentence() ?? '',
             ]);
         }
 
-        // 7. CREATE RESERVATIONS - 30-50
-        for ($i = 0; $i < 40; $i++) {
-            $customer = $customers->random();
-            $table = $tables->random();
-            $menu = $allMenus->random();
-            $option = MenuOption::where('menu_id', $menu->id)->inRandomOrder()->first();
-            
-            Reservation::create([
-                'user_id' => $customer->id,
-                'table_id' => $table->id,
-                'menu_id' => $menu->id,
-                'menu_option_id' => $option->id,
-                'reservation_time' => $faker->dateTimeBetween('+1 days', '+30 days'),
-                'status' => $faker->randomElement(['pending', 'confirmed', 'canceled']),
-            ]);
+        // 7. CREATE RESERVATIONS - 15
+        if ($customers->count() > 0) {
+            for ($i = 0; $i < 15; $i++) {
+                $customer = $customers->random();
+                $table = $tables->random();
+                
+                $reservationDateTime = $faker->dateTimeBetween('+1 days', '+30 days');
+                
+                Reservation::create([
+                    'user_id' => $customer->id,
+                    'table_id' => $table->id,
+                    'reservation_time' => $reservationDateTime,
+                    'guests' => $faker->numberBetween(2, 10),
+                    'status' => $faker->randomElement(['pending', 'confirmed', 'canceled']),
+                ]);
+            }
         }
 
         $this->command->info('✅ Seeder hoàn thành!');
         $this->command->info('📊 Thống kê:');
         $this->command->info('   - Categories: ' . count($categories));
         $this->command->info('   - Menu items: ' . $allMenus->count());
-        $this->command->info('   - Users: ' . $users->count() . ' (80 customers + 10 staff)');
+        $this->command->info('   - Users: ' . $users->count() . ' (30 customers + 5 staff)');
         $this->command->info('   - Tables: ' . $tables->count());
         $this->command->info('   - Transactions: ' . $transactions->count());
-        $this->command->info('   - Temporary Orders: 80');
-        $this->command->info('   - Reservations: 40');
+        $this->command->info('   - Temporary Orders: 20');
+        $this->command->info('   - Reservations: 15');
     }
 }
 

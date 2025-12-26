@@ -14,7 +14,10 @@ class CustomerManagementController extends Controller
      */
     public function index(Request $request)
     {
-        $customerRole = Role::where('name', 'customer')->first();
+        $customerRole = Role::whereIn('name', ['customer', 'guest'])->first();
+        if (!$customerRole) {
+            abort(404, 'Customer role not found');
+        }
         
         $query = User::with(['role'])
             ->where('role_id', $customerRole->id);
@@ -47,7 +50,10 @@ class CustomerManagementController extends Controller
      */
     public function store(Request $request)
     {
-        $customerRole = Role::where('name', 'customer')->first();
+        $customerRole = Role::whereIn('name', ['customer', 'guest'])->first();
+        if (!$customerRole) {
+            abort(404, 'Customer role not found');
+        }
 
         $request->validate([
             'first_name' => 'required|string|max:200',
@@ -77,8 +83,8 @@ class CustomerManagementController extends Controller
         $customer = User::findOrFail($id);
         
         // Kiểm tra là customer
-        $customerRole = Role::where('name', 'customer')->first();
-        if ($customer->role_id !== $customerRole->id) {
+        $customerRole = Role::whereIn('name', ['customer', 'guest'])->first();
+        if (!$customerRole || $customer->role_id !== $customerRole->id) {
             abort(403);
         }
 
@@ -93,8 +99,8 @@ class CustomerManagementController extends Controller
         $customer = User::findOrFail($id);
         
         // Kiểm tra là customer
-        $customerRole = Role::where('name', 'customer')->first();
-        if ($customer->role_id !== $customerRole->id) {
+        $customerRole = Role::whereIn('name', ['customer', 'guest'])->first();
+        if (!$customerRole || $customer->role_id !== $customerRole->id) {
             abort(403);
         }
 
@@ -133,8 +139,8 @@ class CustomerManagementController extends Controller
         $customer = User::findOrFail($id);
         
         // Kiểm tra là customer
-        $customerRole = Role::where('name', 'customer')->first();
-        if ($customer->role_id !== $customerRole->id) {
+        $customerRole = Role::whereIn('name', ['customer', 'guest'])->first();
+        if (!$customerRole || $customer->role_id !== $customerRole->id) {
             abort(403);
         }
 

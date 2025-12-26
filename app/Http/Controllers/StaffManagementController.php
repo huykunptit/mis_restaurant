@@ -15,7 +15,11 @@ class StaffManagementController extends Controller
      */
     public function index(Request $request)
     {
-        $staffRole = Role::where('name', 'staff')->first();
+        $staffRole = Role::where('name', 'employee')->first();
+        
+        if (!$staffRole) {
+            abort(404, 'Staff role not found');
+        }
         
         $query = User::with(['role', 'shift'])
             ->where('role_id', $staffRole->id);
@@ -55,7 +59,11 @@ class StaffManagementController extends Controller
      */
     public function store(Request $request)
     {
-        $staffRole = Role::where('name', 'staff')->first();
+        $staffRole = Role::where('name', 'employee')->first();
+        
+        if (!$staffRole) {
+            abort(404, 'Staff role not found');
+        }
 
         $request->validate([
             'first_name' => 'required|string|max:200',
@@ -87,8 +95,8 @@ class StaffManagementController extends Controller
         $staff = User::with('shift')->findOrFail($id);
         
         // Kiểm tra là staff
-        $staffRole = Role::where('name', 'staff')->first();
-        if ($staff->role_id !== $staffRole->id) {
+        $staffRole = Role::where('name', 'employee')->first();
+        if (!$staffRole || $staff->role_id !== $staffRole->id) {
             abort(403);
         }
 
@@ -105,8 +113,8 @@ class StaffManagementController extends Controller
         $staff = User::findOrFail($id);
         
         // Kiểm tra là staff
-        $staffRole = Role::where('name', 'staff')->first();
-        if ($staff->role_id !== $staffRole->id) {
+        $staffRole = Role::where('name', 'employee')->first();
+        if (!$staffRole || $staff->role_id !== $staffRole->id) {
             abort(403);
         }
 
@@ -147,8 +155,8 @@ class StaffManagementController extends Controller
         $staff = User::findOrFail($id);
         
         // Kiểm tra là staff
-        $staffRole = Role::where('name', 'staff')->first();
-        if ($staff->role_id !== $staffRole->id) {
+        $staffRole = Role::where('name', 'employee')->first();
+        if (!$staffRole || $staff->role_id !== $staffRole->id) {
             abort(403);
         }
 

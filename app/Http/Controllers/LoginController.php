@@ -31,18 +31,20 @@ class LoginController extends Controller
             $user = auth()->user();
             
             // Tự động check-in cho nhân viên
-            if ($user->hasRole('staff')) {
+            if ($user->hasRole('employee')) {
                 $attendanceController = new \App\Http\Controllers\AttendanceController();
                 $attendanceController->checkIn($user->id);
             }
             
             if ($user->hasRole('admin')) {
                 return redirect()->route('home.admin');
-            } elseif ($user->hasRole('staff')) {
+            } elseif ($user->hasRole('employee')) {
                 return redirect()->route('home.staff');
-            } elseif ($user->hasRole('customer')) {
+            } elseif ($user->hasRole('customer') || $user->hasRole('guest')) {
                 return redirect()->route('home.customer');
             }
+
+            return abort(403);
         }
 
         return redirect()

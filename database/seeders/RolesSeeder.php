@@ -17,6 +17,9 @@ class RolesSeeder extends Seeder
         DB::table('roles')->insertOrIgnore([
             ['id' => 1, 'name' => 'admin', 'created_at' => now(), 'updated_at' => now()],
             ['id' => 2, 'name' => 'user', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'employee', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'customer', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'guest', 'created_at' => now(), 'updated_at' => now()],
         ]);
 
         $this->command->info('Roles seeded successfully.');

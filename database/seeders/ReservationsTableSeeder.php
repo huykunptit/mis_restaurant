@@ -9,13 +9,12 @@ use App\Models\User;
 use App\Models\Table;
 use App\Models\Menu;
 use App\Models\MenuOption;
-use Faker\Factory as Faker;
 
 class ReservationsTableSeeder extends Seeder
 {
     public function run()
     {
-        $faker = Faker::create();
+        $faker = \Faker\Factory::create();
         $userIds = User::pluck('id')->toArray();
         $tableIds = Table::pluck('id')->toArray();
         $menuIds = Menu::pluck('id')->toArray();

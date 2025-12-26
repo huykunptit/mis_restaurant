@@ -23,21 +23,20 @@ class isCustomer
                 ->with('error', 'You cannot access the previous page. Please log-in');
         }
 
-        else{
+        if (auth()->user()->hasRole('admin')) {
+            return redirect()->route('home.admin');
+        }
 
-            if(auth()->user()->hasRole('admin')){
-                return redirect()
-                    ->route('home.admin');
-            }
+        if (auth()->user()->hasRole('employee')) {
+            return redirect()->route('home.staff');
+        }
 
-            elseif(auth()->user()->hasRole('staff')){
-                return redirect()
-                    ->route('home.staff');
-            }
+        if (auth()->user()->hasRole('customer') || auth()->user()->hasRole('guest')) {
+            return $next($request);
+        }
 
-            elseif(auth()->user()->hasRole('customer')){
-                return $next($request);
-            }
+        abort(403);
+            return abort(403);
         }
     }
 }

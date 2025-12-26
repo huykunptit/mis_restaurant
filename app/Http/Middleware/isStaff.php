@@ -23,21 +23,18 @@ class isStaff
                 ->with('error', 'You cannot access the previous page. Please log-in');
         }
 
-        else{
-
-            if(auth()->user()->hasRole('admin')){
-                return redirect()
-                    ->route('home.admin');
-            }
-
-            elseif(auth()->user()->hasRole('staff')){
-                return $next($request);
-            }
-
-            elseif(auth()->user()->hasRole('customer')){
-                return redirect()
-                    ->route('home.customer');
-            }
+        if (auth()->user()->hasRole('admin')) {
+            return redirect()->route('home.admin');
         }
+
+        if (auth()->user()->hasRole('employee')) {
+            return $next($request);
+        }
+
+        if (auth()->user()->hasRole('customer')) {
+            return redirect()->route('home.customer');
+        }
+
+        return abort(403);
     }
 }

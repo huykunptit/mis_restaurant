@@ -41,7 +41,7 @@ class AttendanceController extends Controller
             ->paginate(20);
 
         $staffs = User::whereHas('role', function($q) {
-            $q->where('name', 'staff');
+            $q->where('name', 'employee');
         })->orderBy('first_name')->get();
 
         return view('admin.attendances.index', compact('attendances', 'staffs'));
@@ -98,7 +98,7 @@ class AttendanceController extends Controller
         }
 
         $staffs = User::whereHas('role', function($q) {
-            $q->where('name', 'staff');
+            $q->where('name', 'employee');
         })->orderBy('first_name')->get();
 
         return view('admin.attendances.report', compact('reportData', 'staffs', 'dateFrom', 'dateTo'));

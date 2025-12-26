@@ -38,7 +38,7 @@ class OrderController extends Controller
         // Total users
         $totalUsers = User::count();
         $customerRole = \App\Models\Role::where('name', 'customer')->first();
-        $staffRole = \App\Models\Role::where('name', 'staff')->first();
+        $staffRole = \App\Models\Role::where('name', 'employee')->first();
         $totalCustomers = $customerRole ? User::where('role_id', $customerRole->id)->count() : 0;
         $totalStaff = $staffRole ? User::where('role_id', $staffRole->id)->count() : 0;
         

@@ -4,13 +4,12 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Faker\Factory as Faker;
 
 class InvoicesTableSeeder extends Seeder
 {
     public function run()
     {
-        $faker = Faker::create();
+        $faker = \Faker\Factory::create();
         $userIds = DB::table('users')->pluck('id')->toArray();
         $productIds = DB::table('products')->pluck('id')->toArray();
         $paymentIds = DB::table('payments')->pluck('id')->toArray();
